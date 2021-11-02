@@ -12,6 +12,8 @@ module E6
   , secondTrue
   , evenElems
   , oddElems
+  , firstTuple
+  , secondTuple
   ) where
 
 import           Control.Applicative
@@ -28,6 +30,14 @@ optic = (ix "first") `failing` (ix "second")
 firstTrue = M.fromList [("first", False), ("second", False)] & optic .~ True
 
 secondTrue = M.fromList [("second", False)] & optic .~ True
+
+-- 2. Write an optic which focuses the first element of a tuple iff it is even and the second
+-- tuple elemnet otherwise. Assume each slot contains an integer.
+optic'' = _1 . filtered even `failing` _2
+
+secondTuple = (1, 1) & optic'' *~ 10
+
+firstTuple = (2, 2) & optic'' *~ 10
 
 -- 3. Write an optic which focuses all even numbers in a list, if non of the members are even then
 -- focus ALL numbers in the list.
