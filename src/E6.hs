@@ -8,17 +8,11 @@
 {-# LANGUAGE TypeFamilies        #-}
 
 module E6
-  ( firstTrue
-  , secondTrue
-  , evenElems
-  , oddElems
-  , firstTuple
-  , secondTuple
-  , just107
-  , noBroccoli
-  , addWario
-  , unscheduled
-  , preAndNon
+  ( replaceCurly
+  , addSpiderman
+  , deleteSuperman
+  , itoy
+  , noGum
   ) where
 
 import           Control.Applicative
@@ -28,44 +22,21 @@ import qualified Data.Map            as M
 import qualified Data.Set            as S
 import qualified Data.Text           as T
 
--- Exercises Missing Values
--- 1. Write an optic which focuses the value at key "first" or, failing that, the value at key "second"
-optic = ix "first" `failing` ix "second"
+-- Exercises Indexable Structures
+-- 1. Fill in the blanks
+replaceCurly = ["Larry", "Curly", "Moe"] & ix 1 .~ "Wiggly"
 
-firstTrue = M.fromList [("first", False), ("second", False)] & optic .~ True
+herosAndVillains = M.fromList [("Superman", "Lex"), ("Batman", "Joker")]
 
-secondTrue = M.fromList [("second", False)] & optic .~ True
+addSpiderman = herosAndVillains & at "Spiderman" .~ Just "Goblin"
 
--- 2. Write an optic which focuses the first element of a tuple iff it is even and the second
--- tuple elemnet otherwise. Assume each slot contains an integer.
-optic'' = _1 . filtered even `failing` _2
+deleteSuperman = sans "Superman" herosAndVillains
 
-secondTuple = (1, 1) & optic'' *~ 10
+itoy =
+  S.fromList ['a', 'e', 'i', 'o', 'u'] & at 'y' .~ Just () & at 'i' .~ Nothing
 
-firstTuple = (2, 2) & optic'' *~ 10
+-- 2. Use ix and at to go from the input to the output:
+input = M.fromList [("candy bars", 13), ("soda", 34), ("gum", 7)]
 
--- 3. Write an optic which focuses all even numbers in a list, if non of the members are even then
--- focus ALL numbers in the list.
-optic' = (traversed . filtered even) `failing` traversed
-
-evenElems = [1, 2, 3, 4] ^.. optic'
-
-oddElems = [1, 3, 5] ^.. optic'
-
--- 4. Fill in the blanks
-just107 = Nothing & non 100 +~ 7
-
-noBroccoli =
-  M.fromList [("Perogies", True), ("Pizza", True), ("Pilsners", True)] ^.
-  at "Broccoli" .
-  non False
-
-addWario =
-  M.fromList [("Breath of the wild", 22000000), ("Odyssey", 9070000)] &
-  at "Wario's Wood" .
-  non 0 +~
-  999
-
-unscheduled = ["Math", "Science", "Geography"] ^. pre (ix 5) . non "Unscheduled"
-
-preAndNon = [1, 2, 3, 4] ^.. traversed . pre (filtered even) . non (-1)
+-- output = M.fromList [("candy bars", 13), ("ic cream", 5), ("soda", 37)]
+noGum = input & sans "gum" & ix "soda" +~ 3

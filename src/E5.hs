@@ -8,9 +8,13 @@
 {-# LANGUAGE TypeFamilies        #-}
 
 module E5
-  ( Stringmap(..)
-  , at
-  , ix
+  ( extractingNumbers
+  , evenTimes10
+  , aardvarkToKangaroo
+  , antdvark
+  , shiftByOne
+  , reverseTriple
+  , reverse3
   ) where
 
 import           Control.Applicative
@@ -20,30 +24,26 @@ import qualified Data.Map            as M
 import qualified Data.Set            as S
 import qualified Data.Text           as T
 
--- Exercises Custom indexed structures
--- implement both Ixed At for a newtype wrapper around Map
--- which makes indexing case insensitive
--- newtype wrapper
-newtype Stringmap a =
-  Stringmap (M.Map String a)
+-- Exercises partsOf
+extractingNumbers =
+  ([1, 2], M.fromList [('a', 3), ('b', 4)]) ^.
+  partsOf (beside traversed traversed)
 
--- Type Family instances
-type instance Index (Stringmap a) = String
+evenTimes10 = [1, 2, 3, 4] & partsOf (traversed . filtered even) .~ [20, 40]
 
-type instance IxValue (Stringmap a) = a
+aardvarkToKangaroo =
+  ["Aardvark", "Bandicoot", "Capybara"] &
+  partsOf (traversed . traversed) .~ "Kangaroo"
 
--- Typeclass instances
-instance Ixed (Stringmap a) where
-  ix :: Applicative f => String -> (a -> f a) -> Stringmap a -> f (Stringmap a)
-  ix i handler (Stringmap m) =
-    Stringmap <$> traverseOf (ix (map toLower i)) handler m
+antdvark =
+  ["Aardvark", "Bandicoot", "Capybara"] &
+  partsOf (traversed . traversed) .~ "Ant"
 
-instance At (Stringmap a) where
-  at ::
-       Functor f
-    => String
-    -> (Maybe a -> f (Maybe a))
-    -> Stringmap a
-    -> f (Stringmap a)
-  at i handler (Stringmap m) =
-    Stringmap <$> traverseOf (at (map toLower i)) handler m
+shiftByOne =
+  M.fromList [('a', 'a'), ('b', 'b'), ('c', 'c')] &
+  partsOf traversed %~ (tail . cycle)
+
+reverseTriple = ('a', 'b', 'c') & partsOf each %~ reverse
+
+-- Bonus
+reverse3 = [1, 2, 3, 4, 5, 6] & partsOf (traversed . filtered (< 4)) %~ reverse
