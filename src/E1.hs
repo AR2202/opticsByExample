@@ -46,6 +46,7 @@ import qualified Data.Map            as M
 import qualified Data.Set            as S
 import qualified Data.Text           as T
 
+-- Exercises Lenses
 conditional :: Lens' (Bool, a, a) a
 conditional = lens conGetter conSetter
   where
@@ -198,6 +199,7 @@ predicate = lens getter setter
     getter (Predicate p) = p
     setter _ = Predicate
 
+-- | Operators
 data Gate =
   Gate
     { _open    :: Bool
@@ -265,6 +267,7 @@ dudley =
   _1 .~
   False
 
+-- | Simple Folds
 quotes :: [(T.Text, T.Text, T.Text)]
 quotes =
   [ (T.pack "Why", T.pack "So", T.pack "Serious?")
@@ -272,3 +275,8 @@ quotes =
   ]
 
 convertQuotes = quotes ^.. each . each . each
+
+-- | Custom Folds
+yerAWizard = ["Yer", "a", "wizard", "Harry"] ^.. folded . folded
+
+twoEach = [[1, 2, 3], [4, 5, 6]] ^.. folded . folding (take 2)
