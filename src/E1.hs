@@ -158,6 +158,7 @@ fullname = lens getter setter
         (takeWhile (/= ' ') newname)
         (set lastName (drop 1 $ dropWhile (/= ' ') newname) user)
 
+-- | Self-correcting lenses
 data ProducePrices =
   ProducePrices
     { _limePrice  :: Float
@@ -277,6 +278,22 @@ quotes =
 convertQuotes = quotes ^.. each . each . each
 
 -- | Custom Folds
+-- 1. Fill in the blanks
 yerAWizard = ["Yer", "a", "wizard", "Harry"] ^.. folded . folded
 
 twoEach = [[1, 2, 3], [4, 5, 6]] ^.. folded . folding (take 2)
+
+reverseEach = ["bob", "otto", "hannah"] ^.. folded . to reverse
+
+revTuple = ("abc", "def") ^.. folding (\(a, b) -> [a, b]) . to reverse . folded
+
+-- 2. Fill in the blanks
+eachtimes100 = [1 .. 5] ^.. folded . to (* 100)
+
+-- 3. BOnNUS
+fivefourthreetwoone =
+  [(12, 45, 66), (91, 123, 87)] ^.. folded . _2 . to show . folding reverse
+
+secondIfFirstEven =
+  [(1, "a"), (2, "b"), (3, "c"), (4, "d")] ^.. folded . filtered (even . fst) .
+  _2

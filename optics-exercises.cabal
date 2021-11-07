@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 958a313f42bbdf995dbad5912d0f9e9005270b94b2db5ebf893fed36037b1d58
+-- hash: 7ffed6fa8d3001bb7f64c2057ac47cbd4476fae6d8b11100448eb951e99bff98
 
 name:           optics-exercises
 version:        0.1.0.0
@@ -33,7 +33,8 @@ library
       E4
       E5
       E6
-      Lib
+      E7
+      E8
   other-modules:
       Paths_optics_exercises
   hs-source-dirs:
